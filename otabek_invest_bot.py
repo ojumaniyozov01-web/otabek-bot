@@ -1,48 +1,23 @@
 """
 Otabek Invest — Telegram Bot
-==============================
-O'rnatish:
-  pip install pytelegrambotapi
-
-Ishga tushirish:
-  python otabek_invest_bot.py
 """
 
+import os
 import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 
-# =============================================
-#  TOKEN
-# =============================================
-BOT_TOKEN = "8997085031:AAFjdTSLJENiisPTF6oNN8erUhhy8rfIcsI"
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
-# =============================================
-#  MA'LUMOTLAR — o'zingizga mos o'zgartiring
-# =============================================
-
-# Kanallar
 TELEGRAM_CHANNEL = "https://t.me/otabek_investuzb"
 YOUTUBE_CHANNEL  = "https://www.youtube.com/@otabek_invest"
+ADMIN_CONTACT    = "https://t.me/Rus1amovich_01"
+PAYNET_LINK      = "https://app.paynet.uz/qr-online/00020101021140440012qr-online.uz01186r0pXuqltFgF3f8Awg0202115204531153038605802UZ5910AO'PAYNET'6008Tashkent610610002164280002uz0106PAYNET0208Toshkent80520012qr-online.uz03097120207070419marketing@paynet.uz6304A4CF"
 
-# Videolar (YouTube linki)
 VIDEO_MENTORSHIP = "https://youtu.be/PT8I9SWUb4c"
 VIDEO_TRADING    = "https://youtu.be/KRVZ6M-_GQY"
-VIDEO_ABOUT_ME   = ""   # Tayyor bo'lganda shu yerga qo'ying
-VIDEO_TG_CHANNEL = ""   # Tayyor bo'lganda shu yerga qo'ying
-VIDEO_NATIJALAR  = ""   # Tayyor bo'lganda shu yerga qo'ying
 
-# Xush kelibsiz matni
-WELCOME_TEXT = (
-    "Assalomu alaykum! 👋\n\n"
-    "Men *Otabek* — trader va mentor.\n\n"
-    "Quyidagi bo'limlardan birini tanlang 👇"
-)
-
-# =============================================
-#  ASOSIY KLAVIATURA
-# =============================================
 def main_keyboard():
     markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     markup.add(
@@ -52,173 +27,187 @@ def main_keyboard():
         KeyboardButton("📈 Trading haqida"),
         KeyboardButton("🎓 Mentorship"),
         KeyboardButton("🏆 O'quvchilar natijalari"),
+        KeyboardButton("📩 Admin bilan aloqa"),
     )
     return markup
 
-# =============================================
-#  ORQAGA QAYTISH TUGMASI
-# =============================================
 def back_keyboard():
     markup = InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton("🏠 Bosh menyu", callback_data="home"))
     return markup
 
-# =============================================
-#  /start
-# =============================================
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.send_message(
-        message.chat.id,
-        WELCOME_TEXT,
-        parse_mode="Markdown",
-        reply_markup=main_keyboard()
+    text = (
+        "Assalomu alaykum! 👋\n\n"
+        "Otabek Invest botiga xush kelibsiz!\n\n"
+        "Quyidagi bo'limlardan birini tanlang 👇"
     )
+    bot.send_message(message.chat.id, text, reply_markup=main_keyboard())
 
-# =============================================
-#  TUGMALAR
-# =============================================
 @bot.message_handler(func=lambda msg: msg.text == "👤 Men haqimda")
 def about_me(message):
     text = (
-        "👤 *Men haqimda*\n\n"
-        "Men Otabek — professional trader va mentor.\n"
-        "Trading bilan 2018-yildan beri shug'ullanaman.\n\n"
-        "📈 Forex, Crypto va fond bozorida tajribam bor.\n"
-        "🎓 100+ o'quvchiga trading o'rgatganman.\n\n"
-        "📌 Videoni tez orada qo'shaman!"
+        "👤 Men haqimda\n\n"
+        "Salom! Men Otabek — professional trader.\n\n"
+        "📅 2022-yilda valyuta bozorini o'rganishni boshlaganman\n"
+        "💱 Valyuta bozorida (Forex) savdo qilaman\n"
+        "👥 30 ga yaqin shogirdlarim bor\n"
+        "📊 Prop hisob va real hisobda savdo qilaman\n"
+        "⏳ Bu soha bilan professional shug'ullanishni boshlaganimga 1.5 yil bo'ldi\n\n"
+        "Savollaringiz bo'lsa, admin bilan bog'laning! 👇"
     )
-    if VIDEO_ABOUT_ME:
-        text += f"\n\n🎬 [Videoni ko'rish]({VIDEO_ABOUT_ME})"
-        bot.send_message(message.chat.id, text, parse_mode="Markdown",
-                         reply_markup=back_keyboard(), disable_web_page_preview=False)
-    else:
-        bot.send_message(message.chat.id, text, parse_mode="Markdown",
-                         reply_markup=back_keyboard())
-
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("📩 Admin bilan bog'lanish", url=ADMIN_CONTACT))
+    markup.add(InlineKeyboardButton("🏠 Bosh menyu", callback_data="home"))
+    bot.send_message(message.chat.id, text, reply_markup=markup)
 
 @bot.message_handler(func=lambda msg: msg.text == "📢 Telegram kanal")
 def tg_channel(message):
     text = (
-        "📢 *Telegram kanal*\n\n"
-        "Kanalimizda har kuni:\n"
-        "• 📊 Bozor tahlili\n"
-        "• 📌 Foydali signallar\n"
-        "• 🎓 O'quv materiallari\n\n"
-        f"👉 Kanalga o'tish: {TELEGRAM_CHANNEL}"
+        "📢 Telegram kanal\n\n"
+        "Kanalimizda har kuni:\n\n"
+        "📊 Bozor tahlili\n"
+        "📌 Foydali signallar\n"
+        "🎓 O'quv materiallari\n"
+        "💡 Trading sirlari\n\n"
+        "Kanalga qo'shiling va bilimlaringizni oshiring! 👇"
     )
     markup = InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton("📢 Kanalga o'tish", url=TELEGRAM_CHANNEL))
     markup.add(InlineKeyboardButton("🏠 Bosh menyu", callback_data="home"))
-
-    if VIDEO_TG_CHANNEL:
-        bot.send_message(message.chat.id,
-                         text + f"\n\n🎬 [Kanal haqida video]({VIDEO_TG_CHANNEL})",
-                         parse_mode="Markdown", reply_markup=markup)
-    else:
-        bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
-
+    bot.send_message(message.chat.id, text, reply_markup=markup)
 
 @bot.message_handler(func=lambda msg: msg.text == "🎥 YouTube kanal")
 def yt_channel(message):
     text = (
-        "🎥 *YouTube kanal*\n\n"
-        "YouTube kanalimizda:\n"
-        "• 🎓 Bepul darsliklar\n"
-        "• 📊 Tahlillar va strategiyalar\n"
-        "• 💡 Trading sirlari\n\n"
-        f"👉 Kanalga o'tish: {YOUTUBE_CHANNEL}"
+        "🎥 YouTube kanal\n\n"
+        "YouTube kanalimizda:\n\n"
+        "🎓 Bepul darsliklar\n"
+        "📊 Bozor tahlillari\n"
+        "📈 Trading strategiyalari\n"
+        "💡 Foydali maslahatlar\n\n"
+        "Kanalga obuna bo'ling! 👇"
     )
     markup = InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton("🎥 YouTube kanalga o'tish", url=YOUTUBE_CHANNEL))
     markup.add(InlineKeyboardButton("🏠 Bosh menyu", callback_data="home"))
-    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
-
+    bot.send_message(message.chat.id, text, reply_markup=markup)
 
 @bot.message_handler(func=lambda msg: msg.text == "📈 Trading haqida")
 def trading_info(message):
     text = (
-        "📈 *Trading haqida*\n\n"
+        "📈 Trading haqida\n\n"
         "Trading — bu moliyaviy bozorlarda savdo qilish orqali daromad topish.\n\n"
-        "📌 Men o'rgatadigan yo'nalishlar:\n"
-        "• Forex bozori\n"
-        "• Kripto bozori\n"
-        "• Texnik tahlil\n"
-        "• Risk menejment\n\n"
-        "🎬 Quyidagi videoda batafsil ma'lumot:"
+        "Men o'rgatadigan yo'nalishlar:\n\n"
+        "💱 Valyuta bozori (Forex)\n"
+        "📊 Texnik tahlil\n"
+        "🛡 Risk menejment\n"
+        "📉 Grafik o'qish\n\n"
+        "Batafsil ma'lumot uchun videoni ko'ring! 👇"
     )
     markup = InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton("🎬 Videoni ko'rish", url=VIDEO_TRADING))
     markup.add(InlineKeyboardButton("🏠 Bosh menyu", callback_data="home"))
-    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
-
+    bot.send_message(message.chat.id, text, reply_markup=markup)
 
 @bot.message_handler(func=lambda msg: msg.text == "🎓 Mentorship")
 def mentorship(message):
     text = (
-        "🎓 *Mentorship dasturi*\n\n"
+        "🎓 Mentorship dasturi\n\n"
         "Mentorship — bu men bilan individual ishlash imkoniyati.\n\n"
-        "✅ Dasturga nima kiradi:\n"
-        "• Shaxsiy dars jadvali\n"
-        "• Amaliy mashg'ulotlar\n"
-        "• 24/7 savollarga javob\n"
-        "• Real bozorda amaliyot\n\n"
-        "🎬 Quyidagi videoda batafsil ma'lumot:"
+        "Dasturga nima kiradi:\n\n"
+        "✅ Shaxsiy dars jadvali\n"
+        "✅ Amaliy mashg'ulotlar\n"
+        "✅ 24/7 savollarga javob\n"
+        "✅ Real bozorda amaliyot\n"
+        "✅ Prop hisob bo'yicha yo'riqnoma\n\n"
+        "Narxlar:\n\n"
+        "💻 Online — 169$\n"
+        "🏫 Offline — 399$\n\n"
+        "Qaysi formatni tanlaysiz? 👇"
     )
     markup = InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton("🎬 Videoni ko'rish", url=VIDEO_MENTORSHIP))
-    markup.add(InlineKeyboardButton("📢 Bog'lanish", url=TELEGRAM_CHANNEL))
+    markup.add(InlineKeyboardButton("💻 Online — 169$", callback_data="join_online"))
+    markup.add(InlineKeyboardButton("🏫 Offline — 399$", callback_data="join_offline"))
     markup.add(InlineKeyboardButton("🏠 Bosh menyu", callback_data="home"))
-    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
+    bot.send_message(message.chat.id, text, reply_markup=markup)
 
+@bot.callback_query_handler(func=lambda call: call.data == "join_online")
+def join_online(call):
+    text = (
+        "💻 Online mentorship — 169$\n\n"
+        "To'lov qilish uchun quyidagi tugmani bosing.\n\n"
+        "To'lovdan so'ng chekni adminga yuboring —\n"
+        "sizni dasturga qo'shamiz! 👇"
+    )
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("💳 Paynet orqali to'lash", url=PAYNET_LINK))
+    markup.add(InlineKeyboardButton("📩 Chekni adminga yuborish", url=ADMIN_CONTACT))
+    markup.add(InlineKeyboardButton("🏠 Bosh menyu", callback_data="home"))
+    bot.send_message(call.message.chat.id, text, reply_markup=markup)
+    bot.answer_callback_query(call.id)
+
+@bot.callback_query_handler(func=lambda call: call.data == "join_offline")
+def join_offline(call):
+    text = (
+        "🏫 Offline mentorship — 399$\n\n"
+        "To'lov qilish uchun quyidagi tugmani bosing.\n\n"
+        "To'lovdan so'ng chekni adminga yuboring —\n"
+        "sizni dasturga qo'shamiz! 👇"
+    )
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("💳 Paynet orqali to'lash", url=PAYNET_LINK))
+    markup.add(InlineKeyboardButton("📩 Chekni adminga yuborish", url=ADMIN_CONTACT))
+    markup.add(InlineKeyboardButton("🏠 Bosh menyu", callback_data="home"))
+    bot.send_message(call.message.chat.id, text, reply_markup=markup)
+    bot.answer_callback_query(call.id)
 
 @bot.message_handler(func=lambda msg: msg.text == "🏆 O'quvchilar natijalari")
 def results(message):
     text = (
-        "🏆 *O'quvchilar natijalari*\n\n"
+        "🏆 O'quvchilar natijalari\n\n"
         "Mening o'quvchilarimning real natijalari:\n\n"
-        "📊 100+ o'quvchi\n"
+        "👥 30 ga yaqin o'quvchi\n"
         "💰 Ko'pchilik doimiy daromad olmoqda\n"
-        "🌍 O'zbekiston va chet eldan o'quvchilar\n\n"
-        "📌 Natijalar rasmlari va videolari tez orada qo'shiladi!\n\n"
-        "👉 Ko'proq ma'lumot uchun kanalga o'ting:"
+        "🌍 O'zbekistonning turli shaharlaridan o'quvchilar\n"
+        "📊 Prop hisob va real hisobda savdo qiluvchilar\n\n"
+        "Siz ham qo'shiling! 👇"
     )
     markup = InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton("📢 Telegram kanal", url=TELEGRAM_CHANNEL))
+    markup.add(InlineKeyboardButton("📩 Admin bilan bog'lanish", url=ADMIN_CONTACT))
     markup.add(InlineKeyboardButton("🏠 Bosh menyu", callback_data="home"))
-    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
+    bot.send_message(message.chat.id, text, reply_markup=markup)
 
+@bot.message_handler(func=lambda msg: msg.text == "📩 Admin bilan aloqa")
+def admin_contact(message):
+    text = (
+        "📩 Admin bilan aloqa\n\n"
+        "Savol yoki takliflaringiz bo'lsa,\n"
+        "admin bilan bog'laning!\n\n"
+        "Tez orada javob beramiz 👇"
+    )
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("📩 Admin bilan yozish", url=ADMIN_CONTACT))
+    markup.add(InlineKeyboardButton("🏠 Bosh menyu", callback_data="home"))
+    bot.send_message(message.chat.id, text, reply_markup=markup)
 
-# =============================================
-#  INLINE CALLBACK — Bosh menyu
-# =============================================
 @bot.callback_query_handler(func=lambda call: call.data == "home")
 def go_home(call):
-    bot.send_message(
-        call.message.chat.id,
-        "🏠 *Bosh menyu*\n\nQuyidagi bo'limlardan birini tanlang:",
-        parse_mode="Markdown",
-        reply_markup=main_keyboard()
+    text = (
+        "🏠 Bosh menyu\n\n"
+        "Quyidagi bo'limlardan birini tanlang 👇"
     )
+    bot.send_message(call.message.chat.id, text, reply_markup=main_keyboard())
     bot.answer_callback_query(call.id)
 
-
-# =============================================
-#  NOMA'LUM XABAR
-# =============================================
 @bot.message_handler(func=lambda msg: True)
 def unknown(message):
-    bot.send_message(
-        message.chat.id,
-        "Quyidagi tugmalardan birini tanlang 👇",
-        reply_markup=main_keyboard()
-    )
+    bot.send_message(message.chat.id, "Quyidagi tugmalardan birini tanlang 👇", reply_markup=main_keyboard())
 
-
-# =============================================
-#  BOTNI ISHGA TUSHIRISH
-# =============================================
 if __name__ == "__main__":
-    print("✅ Otabek Invest boti ishga tushdi...")
-    print("⛔ To'xtatish uchun: Ctrl+C")
+    print("Otabek Invest boti ishga tushdi...")
+    print("Toxtatish uchun: Ctrl+C")
     bot.infinity_polling()
